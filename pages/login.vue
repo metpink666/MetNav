@@ -21,25 +21,27 @@
 const password = ref('')
 const loading = ref(false)
 const error = ref('')
+const router = useRouter()
 
 const handleLogin = async () => {
   if (!password.value.trim()) {
     error.value = '请输入密码'
     return
   }
-  
+
   loading.value = true
   error.value = ''
-  
+
   try {
     const { data } = await useFetch('/api/auth/verify', {
       method: 'POST',
       body: { password: password.value }
     })
-    
+
     if (data.value?.success) {
-      // 跳转到主界面
-      await navigateTo('/')
+      // 强制跳转，并在跳转后刷新页面
+      await router.push('/')
+      window.location.href = '/'
     } else {
       error.value = data.value?.error || '密码错误'
     }

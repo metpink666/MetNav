@@ -1,4 +1,3 @@
-version: '3'
 services:
   nuxt-dev:
     build: .
@@ -9,4 +8,7 @@ services:
       - /app/.output
     ports:
       - "3000:3000"
-    command: sh -c "wrangler d1 execute metnav-db --local --file=./migrations/init.sql && npm run dev -- --host 0.0.0.0"
+    environment:
+      - NUXT_ENV_LOCAL_DB=true
+      - NUXT_ENV_D1_DATABASE_ID=local
+    command: sh -c "npx wrangler d1 execute metnav-db --local --file=./migrations/init.sql && npm run dev"

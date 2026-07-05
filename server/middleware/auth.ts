@@ -1,17 +1,16 @@
 export default defineEventHandler((event) => {
-  // 登录页面和验证接口不需要检查
   const path = event.path || ''
-  if (path === '/login' || path === '/api/auth/verify') {
+  
+  // 登录页面和 API 放行
+  if (path === '/login' || path.startsWith('/api/')) {
     return
   }
   
-  // 检查登录状态
+  // 检查 cookie
   const auth = getCookie(event, 'metnav_auth')
+  
   if (auth !== 'true') {
-    // 返回 401，前端跳转到登录页
-    throw createError({
-      statusCode: 401,
-      message: '请先登录'
-    })
+    // 没有登录 → 重定向到 login
+    return sendRedirect(event, '/login', 302)
   }
 })

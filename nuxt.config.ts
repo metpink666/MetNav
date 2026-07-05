@@ -3,10 +3,5 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-pages'
   },
-  runtimeConfig: {
-    public: {
-      appName: 'MetNav'
-    }
-  },
   css: ['~/assets/css/main.css']
 })
