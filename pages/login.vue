@@ -39,9 +39,7 @@ const handleLogin = async () => {
     })
 
     if (data.value?.success) {
-      // 强制跳转，并在跳转后刷新页面
-      await router.push('/')
-      window.location.href = '/'
+      await navigateTo('/admin')
     } else {
       error.value = data.value?.error || '密码错误'
     }
