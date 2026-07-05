@@ -1,0 +1,56 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(145deg, #0b1a2e, #1c3a5e);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.container {
+  text-align: center;
+}
+
+h1 {
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: 2px;
+  margin-bottom: 40px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.links {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.glass {
+  display: inline-block;
+  padding: 18px 40px;
+  border-radius: 60px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #f0f6ff;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.glass:hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+}
