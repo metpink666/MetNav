@@ -8,7 +8,6 @@
           <span class="name">{{ item.name }}</span>
           <span class="url">{{ item.url }}</span>
           <span class="note">{{ item.note || '' }}</span>
-          <span class="cat">{{ item.category_name || '未分类' }}</span>
         </div>
         <div class="actions">
           <button @click="editBookmark(item)" class="btn-edit">✎</button>
@@ -16,52 +15,36 @@
         </div>
       </div>
     </div>
-
-    <!-- 新增表单 -->
     <div class="add-form">
-      <input v-model="newBookmark.name" placeholder="名称" class="input" />
-      <input v-model="newBookmark.url" placeholder="网址" class="input" />
+      <input v-model="newItem.name" placeholder="名称" class="input" />
+      <input v-model="newItem.url" placeholder="网址" class="input" />
       <div class="flex-row">
-        <input v-model="newBookmark.avatar" placeholder="头像 URL" class="input" />
-        <button @click="autoFetchAvatar" class="btn-small">🖼️ 自动获取</button>
+        <input v-model="newItem.avatar" placeholder="头像 URL" class="input" />
+        <button @click="autoFetchAvatar" class="btn-small">🖼️ 获取头像</button>
       </div>
-      <input v-model="newBookmark.note" placeholder="备注" class="input" />
-      <select v-model="newBookmark.category_id" class="input">
-        <option :value="null">无分类</option>
-        <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
-      </select>
+      <input v-model="newItem.note" placeholder="备注" class="input" />
       <button @click="addBookmark" class="btn-add">➕ 添加</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-
 const bookmarks = ref([])
-const categories = ref([])
-const newBookmark = ref({ name: '', url: '', avatar: '', note: '', category_id: null })
+const newItem = ref({ name: '', url: '', avatar: '', note: '' })
 
-const fetchData = async () => {
-  const [bmRes, catRes] = await Promise.all([
-    $fetch('/api/bookmarks'),
-    $fetch('/api/categories')
-  ])
-  bookmarks.value = bmRes.data || []
-  categories.value = catRes.data || []
+const fetchBookmarks = async () => {
+  const { data } = await $fetch('/api/bookmarks')
+  bookmarks.value = data || []
 }
 
 const addBookmark = async () => {
-  if (!newBookmark.value.name.trim() || !newBookmark.value.url.trim()) {
+  if (!newItem.value.name.trim() || !newItem.value.url.trim()) {
     alert('名称和网址不能为空')
     return
   }
-  await $fetch('/api/bookmarks', {
-    method: 'POST',
-    body: { ...newBookmark.value, category_id: newBookmark.value.category_id || null }
-  })
-  newBookmark.value = { name: '', url: '', avatar: '', note: '', category_id: null }
-  await fetchData()
+  await $fetch('/api/bookmarks', { method: 'POST', body: newItem.value })
+  newItem.value = { name: '', url: '', avatar: '', note: '' }
+  await fetchBookmarks()
 }
 
 const editBookmark = async (item) => {
@@ -69,32 +52,30 @@ const editBookmark = async (item) => {
   if (!name?.trim()) return
   const url = prompt('网址:', item.url)
   if (!url?.trim()) return
-  const note = prompt('备注:', item.note || '') || ''
   await $fetch(`/api/bookmarks/${item.id}`, {
     method: 'PUT',
-    body: { name: name.trim(), url: url.trim(), note, avatar: item.avatar, category_id: item.category_id }
+    body: { ...item, name: name.trim(), url: url.trim() }
   })
-  await fetchData()
+  await fetchBookmarks()
 }
 
 const deleteBookmark = async (id) => {
-  if (!confirm('确认删除此网址？')) return
+  if (!confirm('确认删除？')) return
   await $fetch(`/api/bookmarks/${id}`, { method: 'DELETE' })
-  await fetchData()
+  await fetchBookmarks()
 }
 
 const autoFetchAvatar = () => {
-  const url = newBookmark.value.url.trim()
-  if (!url) { alert('请先输入网址') }
-  newBookmark.value.avatar = `https://www.google.com/s2/favicons?domain=${url.replace(/^https?:\/\//, '')}`
+  const url = newItem.value.url.trim()
+  if (!url) return alert('请先输入网址')
+  newItem.value.avatar = `https://www.google.com/s2/favicons?domain=${url.replace(/^https?:\/\//, '')}`
 }
 
-onMounted(fetchData)
+fetchBookmarks()
 </script>
 
 <style scoped>
 h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
-.list { margin-bottom: 16px; }
 .row {
   display: flex;
   justify-content: space-between;
@@ -103,14 +84,12 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   border-bottom: 1px solid rgba(255,255,255,0.04);
   color: #f0f6ff;
   flex-wrap: wrap;
-  gap: 8px;
 }
 .info { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.avatar { width: 28px; height: 28px; border-radius: 6px; object-fit: contain; background: rgba(255,255,255,0.05); padding: 2px; }
+.avatar { width: 28px; height: 28px; border-radius: 6px; object-fit: contain; background: rgba(255,255,255,0.05); }
 .name { font-weight: 500; }
 .url { opacity: 0.5; font-size: 0.8rem; }
 .note { opacity: 0.4; font-size: 0.7rem; }
-.cat { background: rgba(255,255,255,0.06); padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; }
 .actions { display: flex; gap: 6px; }
 .btn-edit, .btn-delete {
   background: rgba(255,255,255,0.06);
@@ -120,9 +99,8 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   border-radius: 20px;
   cursor: pointer;
 }
-.btn-delete:hover { background: rgba(255,70,70,0.2); color: #ff6b6b; }
 .add-form { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-.flex-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.flex-row { display: flex; gap: 8px; }
 .input {
   padding: 10px 16px;
   border-radius: 40px;
@@ -130,11 +108,7 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   background: rgba(255,255,255,0.04);
   color: #f0f6ff;
   outline: none;
-  flex: 1;
-  min-width: 120px;
 }
-.input::placeholder { color: rgba(255,255,255,0.3); }
-select.input option { background: #1c3a5e; }
 .btn-add {
   padding: 10px 20px;
   border-radius: 40px;
@@ -144,7 +118,6 @@ select.input option { background: #1c3a5e; }
   cursor: pointer;
   align-self: flex-start;
 }
-.btn-add:hover { background: rgba(255,255,255,0.16); }
 .btn-small {
   padding: 8px 16px;
   border-radius: 40px;
@@ -152,7 +125,5 @@ select.input option { background: #1c3a5e; }
   background: rgba(255,255,255,0.06);
   color: #f0f6ff;
   cursor: pointer;
-  font-size: 0.8rem;
-  white-space: nowrap;
 }
 </style>

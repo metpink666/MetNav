@@ -18,8 +18,6 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-
 const categories = ref([])
 const newName = ref('')
 
@@ -36,25 +34,24 @@ const addCategory = async () => {
 }
 
 const editCategory = async (cat) => {
-  const newName = prompt('修改分类名称:', cat.name)
-  if (newName && newName.trim()) {
-    await $fetch(`/api/categories/${cat.id}`, { method: 'PUT', body: { name: newName.trim() } })
+  const name = prompt('修改分类名称:', cat.name)
+  if (name?.trim()) {
+    await $fetch(`/api/categories/${cat.id}`, { method: 'PUT', body: { name: name.trim() } })
     await fetchCategories()
   }
 }
 
 const deleteCategory = async (id) => {
-  if (!confirm('确认删除此分类？')) return
+  if (!confirm('确认删除？')) return
   await $fetch(`/api/categories/${id}`, { method: 'DELETE' })
   await fetchCategories()
 }
 
-onMounted(fetchCategories)
+fetchCategories()
 </script>
 
 <style scoped>
 h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
-.list { margin-bottom: 16px; }
 .row {
   display: flex;
   justify-content: space-between;
@@ -72,9 +69,8 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   border-radius: 20px;
   cursor: pointer;
 }
-.btn-edit:hover { background: rgba(255,255,255,0.12); }
 .btn-delete:hover { background: rgba(255,70,70,0.2); color: #ff6b6b; }
-.add-form { display: flex; gap: 8px; flex-wrap: wrap; }
+.add-form { display: flex; gap: 8px; margin-top: 12px; }
 .input {
   flex: 1;
   padding: 10px 16px;
@@ -83,9 +79,7 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   background: rgba(255,255,255,0.04);
   color: #f0f6ff;
   outline: none;
-  min-width: 150px;
 }
-.input::placeholder { color: rgba(255,255,255,0.3); }
 .btn-add {
   padding: 10px 20px;
   border-radius: 40px;
@@ -94,5 +88,4 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   color: #f0f6ff;
   cursor: pointer;
 }
-.btn-add:hover { background: rgba(255,255,255,0.16); }
 </style>

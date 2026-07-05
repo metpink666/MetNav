@@ -12,8 +12,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-
 const oldPwd = ref('')
 const newPwd = ref('')
 const confirmPwd = ref('')
@@ -49,7 +47,7 @@ const changePassword = async () => {
       confirmPwd.value = ''
     }
   } catch {
-    message.value = '❌ 请求失败，请重试'
+    message.value = '❌ 请求失败'
   }
 }
 </script>
@@ -65,7 +63,6 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   color: #f0f6ff;
   outline: none;
 }
-.input::placeholder { color: rgba(255,255,255,0.3); }
 .btn-change {
   padding: 12px;
   border-radius: 40px;
@@ -74,6 +71,5 @@ h3 { color: #f0f6ff; font-weight: 400; margin-bottom: 16px; }
   color: #f0f6ff;
   cursor: pointer;
 }
-.btn-change:hover { background: rgba(255,255,255,0.16); }
 .msg { margin-top: 8px; color: #f0f6ff; font-size: 0.9rem; opacity: 0.8; }
 </style>

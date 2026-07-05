@@ -39,7 +39,8 @@ const handleLogin = async () => {
     })
 
     if (data.value?.success) {
-      await navigateTo('/admin')
+      // 登录成功，跳转到管理后台
+      await router.push('/admin')
     } else {
       error.value = data.value?.error || '密码错误'
     }
@@ -58,11 +59,9 @@ const handleLogin = async () => {
   align-items: center;
   min-height: 80vh;
 }
-
 .login-card {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   padding: 48px 40px;
   border-radius: 32px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -71,20 +70,17 @@ const handleLogin = async () => {
   max-width: 380px;
   text-align: center;
 }
-
 .login-card h1 {
   color: #fff;
   font-size: 2rem;
   font-weight: 300;
   margin-bottom: 8px;
 }
-
 .login-card p {
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.95rem;
   margin-bottom: 24px;
 }
-
 .login-card input {
   width: 100%;
   padding: 14px 18px;
@@ -94,18 +90,14 @@ const handleLogin = async () => {
   color: #fff;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s;
   margin-bottom: 16px;
 }
-
 .login-card input::placeholder {
   color: rgba(255, 255, 255, 0.4);
 }
-
 .login-card input:focus {
   border-color: rgba(255, 255, 255, 0.3);
 }
-
 .login-card button {
   width: 100%;
   padding: 14px;
@@ -118,20 +110,16 @@ const handleLogin = async () => {
   cursor: pointer;
   transition: background 0.2s;
 }
-
 .login-card button:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.25);
 }
-
 .login-card button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 .login-card .error {
   color: #ff6b6b;
   font-size: 0.85rem;
   margin-top: 12px;
-  margin-bottom: 0;
 }
 </style>
