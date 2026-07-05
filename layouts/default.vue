@@ -1,0 +1,27 @@
+<template>
+  <div class="app-container">
+    <slot />
+  </div>
+</template>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(145deg, #0b1a2e 0%, #1c3a5e 100%);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+</style>

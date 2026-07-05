@@ -1,0 +1,7 @@
+node_modules
+.git
+*.log
+.nuxt
+.output
+dist
+.DS_Store
